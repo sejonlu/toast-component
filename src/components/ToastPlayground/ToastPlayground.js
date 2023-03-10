@@ -43,9 +43,11 @@ function ToastPlayground() {
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            createToast(message, variant);
-            setMessage("");
-            setVariant(VARIANT_OPTIONS[0]);
+            if (message) {
+              createToast(message, variant);
+              setMessage("");
+              setVariant(VARIANT_OPTIONS[0]);
+            }
           }}
         >
           <div className={styles.row}>

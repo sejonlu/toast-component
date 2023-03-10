@@ -1,34 +1,47 @@
 import React from "react";
 
 import Button from "../Button";
-import Toast from "../Toast";
 
 import styles from "./ToastPlayground.module.css";
+import ToastShelf from "../ToastShelf";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
   const [message, setMessage] = React.useState("");
-  const [showToast, setShowToast] = React.useState(false);
+  const [toasts, setToasts] = React.useState([]);
+
+  function handleDismiss(id) {
+    const nextToasts = toasts.filter((toast) => {
+      return toast.id !== id;
+    });
+    setToasts(nextToasts);
+  }
+
+  function handleCreateToast(event) {
+    event.preventDefault();
+
+    const nextToasts = [
+      ...toasts,
+      {
+        id: Math.random(),
+        message,
+        variant,
+      },
+    ];
+    setToasts(nextToasts);
+    setMessage("");
+    setVariant(VARIANT_OPTIONS[0]);
+  }
 
   return (
     <div className={styles.wrapper}>
-      {/*TODO: Remove debugging printouts*/}
-      <div>Message: {message}</div>
-      <div>Variant: {variant}</div>
-
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {showToast && (
-        <Toast
-          message={message}
-          variant={variant}
-          handleClose={() => setShowToast(false)}
-        />
-      )}
+      <ToastShelf toasts={toasts} handleDismiss={handleDismiss} />
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
           <label
@@ -49,34 +62,42 @@ function ToastPlayground() {
             />
           </div>
         </div>
-
-        <div className={styles.row}>
-          <div className={styles.label}>Variant</div>
-          <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            {VARIANT_OPTIONS.map((option) => (
-              <label htmlFor={`variant-${option}`}>
-                <input
-                  id={`variant-${option}`}
-                  type="radio"
-                  name="variant"
-                  value={option}
-                  checked={variant === option}
-                  onChange={() => {
-                    setVariant(option);
-                  }}
-                />
-                {option}
-              </label>
-            ))}
+        <form onSubmit={handleCreateToast}>
+          <div className={styles.row}>
+            <div className={styles.label}>Variant</div>
+            <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+              {VARIANT_OPTIONS.map((option) => (
+                <label key={Math.random()} htmlFor={`variant-${option}`}>
+                  <input
+                    id={`variant-${option}`}
+                    type="radio"
+                    name="variant"
+                    value={option}
+                    checked={variant === option}
+                    onChange={() => {
+                      setVariant(option);
+                    }}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.label} />
-          <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={() => setShowToast(true)}>Pop Toast!</Button>
+          <div className={styles.row}>
+            <div className={styles.label} />
+            <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+              <Button>Pop Toast!</Button>
+            </div>
           </div>
-        </div>
+        </form>
+      </div>
+
+      {/*TODO: Remove debugging printouts*/}
+      <br />
+      <div>Message: {message}</div>
+      <div>Variant: {variant}</div>
+      <div>
+        <pre>{JSON.stringify(toasts, null, 2)}</pre>
       </div>
     </div>
   );

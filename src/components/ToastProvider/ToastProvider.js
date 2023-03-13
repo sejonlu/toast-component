@@ -12,6 +12,10 @@ function ToastProvider({ children }) {
     setToasts(nextToasts);
   }
 
+  function dismissAllToasts() {
+    setToasts([]);
+  }
+
   function createToast(message, variant) {
     const nextToasts = [
       ...toasts,
@@ -25,7 +29,9 @@ function ToastProvider({ children }) {
   }
 
   return (
-    <ToastContext.Provider value={{ dismissToast, createToast, toasts }}>
+    <ToastContext.Provider
+      value={{ dismissToast, dismissAllToasts, createToast, toasts }}
+    >
       {children}
     </ToastContext.Provider>
   );

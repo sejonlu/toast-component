@@ -5,8 +5,7 @@ import Toast from "../Toast";
 import { ToastContext } from "../ToastProvider";
 
 function ToastShelf() {
-  const { toasts, dismissAllToasts } = React.useContext(ToastContext);
-  useEscapeKey(dismissAllToasts);
+  const { toasts } = React.useContext(ToastContext);
   if (!toasts) return null;
 
   return (
@@ -25,22 +24,6 @@ function ToastShelf() {
       ))}
     </ol>
   );
-}
-
-function useEscapeKey(callback) {
-  React.useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.code === "Escape") {
-        callback();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [callback]);
 }
 
 export default ToastShelf;
